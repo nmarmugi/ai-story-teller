@@ -12,15 +12,5 @@
 		background: rgb(131,131,131);
 		background: linear-gradient(90deg, var(--secondary-color) 0%, var(--clear-color) 100%);
 		border-radius: 10px;
-		animation: titleMove 1s linear forwards;
-	}
-}
-
-@keyframes titleMove {
-	from {
-		transform: translateX(-500px);
-	}
-	to {
-		transform: translateX(0px);
 	}
 }

@@ -14,13 +14,19 @@ export default function Home() {
     antagonist: '',
     genre: ''
   })
-
   const [error, setError] = useState(false)
+  const [load, setLoad] = useState(true)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prevState => ({ ...prevState, [name]: value }));
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoad(false)
+    }, 2500)
+  }, [])
 
   useEffect(() => {
     if ((!/^[a-zA-Z\s]+$/.test(formData.antagonist) && formData.antagonist !== '') || (!/^[a-zA-Z\s]+$/.test(formData.protagonist) && formData.protagonist !== '')) {
@@ -40,12 +46,12 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <Header title="ai Story Teller" />
-        <WindowBox display={error} title="Story Params">
+        <WindowBox loader={load} display={error} title="Story Params">
           {arrayInputLabel.map(element => (<InputLabel key={element.input.id} input={element.input} label={element.label} onChange={handleChange}/>))}
           <SelectOptions label={objSelect.label} options={objSelect.options} onChange={handleChange} />
           <Button disabled={!(formData.protagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.protagonist)) || !(formData.antagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.antagonist)) || formData.genre === ''} title="Generate" />
         </WindowBox>
       </main>
     </>
-  );
+  )
 }
