@@ -3,13 +3,14 @@ import styles from './Button.module.scss'
 interface IButton {
 	title: string;
 	onClick?: () => void;
+	disabled?: boolean;
 }
 
 export default function Button(props: IButton) {
 
-	const {title, onClick} = props;
+	const {title, onClick, disabled} = props;
 
 	return (
-		<button className={styles.button} onClick={onClick}>{title}</button>
+		<button disabled={disabled} className={styles.button} onClick={onClick}>{title}</button>
 	)
 }

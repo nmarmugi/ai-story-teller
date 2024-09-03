@@ -11,9 +11,73 @@
 		background-color: var(--clear-color);
 		border-radius: 12px;
 		padding: 10px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		position: relative;
+		overflow: hidden;
 
 		.windowBoxTitle {
 			color: var(--background-color);
+			margin-bottom: 50px;
 		}
+
+		.error {
+			background-color: red;
+			width: 200px;
+			padding: 5px;
+			border-radius: 8px;
+			color: var(--background-color);
+			font-weight: bolder;
+			position: absolute;
+			top: 45px;
+			animation: errorMessage 0.35s linear forwards;
+		}
+
+		.noError {
+			background-color: red;
+			width: 200px;
+			padding: 5px;
+			border-radius: 8px;
+			color: var(--background-color);
+			font-weight: bolder;
+			position: absolute;
+			top: 45px;
+			animation: noErrorMessage 0.35s linear forwards;
+		}
+
+		.windowBoxParams {
+			display: flex;
+			gap: 20px;
+		}
+	}
+}
+
+@keyframes errorMessage {
+	from {
+		left: -200px;
+	}
+	to {
+		left: 10px;
+	}
+}
+
+@keyframes noErrorMessage {
+	from {
+		left: 10px;
+	}
+	to {
+		left: -200px;
+	}
+}
+
+@media (max-width: 768px) {
+	.windowBoxParams {
+		width: 200px;
+	}
+
+	.windowBoxParams {
+		flex-direction: column;
+		align-items: center;
 	}
 }

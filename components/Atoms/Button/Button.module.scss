@@ -8,8 +8,16 @@
 	background-color: var(--primary-color);
 	color: var(--background-color);
 	transition: all 0.35s ease;
+	max-width: 100px;
 
 	&:hover {
-		background-color: var(--clear-color);
+		background-color: var(--secondary-color);
+		color: var(--clear-color);
+	}
+
+	&:disabled {
+		background-color: #EFEFEF;
+		color: var(--background-color);
+		cursor: auto;
 	}
 }
