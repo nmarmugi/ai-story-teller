@@ -1,0 +1,35 @@
+.main {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+
+	.label {
+		font-size: 16px;
+		min-width: 87px;
+	}
+
+	.switch {
+		background-color: var(--background-color);
+		min-width: 40px;
+		height: 20px;
+		border-radius: 30px;
+		position: relative;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
+
+	.dot {
+		position: absolute;
+		width: 16px;
+		height: 16px;
+		background-color: #EFEFEF;
+		border-radius: 50%;
+		left: 3px;
+		transition: all 0.35s ease;
+
+		&.on {
+			left: 21px;
+		}
+	}
+}

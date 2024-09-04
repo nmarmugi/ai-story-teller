@@ -14,7 +14,7 @@ export default function Select(props: ISelect) {
 
 	return (
 		<select className={styles.select} id={id} name={name} onChange={onChange}>
-			<option value="" hidden>Select genre...</option>
+			<option value="" hidden>Select {name}...</option>
 			{children}
 		</select>
 	)

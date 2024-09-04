@@ -3,4 +3,77 @@
   min-height: 100dvh;
   background-color: var(--background-color);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.story {
+  max-width: 1440px;
+  width: 100%;
+  min-height: 161px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  font-weight: bolder;
+  color: var(--background-color);
+  line-height: 25px;
+  letter-spacing: 0.05em;
+  padding: 20px;
+  background-color: var(--clear-color);
+  border-radius: 12px;
+  position: relative;
+}
+
+.loadStory {
+  max-width: 1440px;
+  width: 100%;
+  margin-top: 250px;
+  margin-bottom: 100px;
+  background-color: var(--background-color);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.textLoad {
+  max-width: 1400px;
+  width: 100%;
+  height: 300px;
+  animation: skeletonElement 2s linear infinite;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+
+  .loading {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--clear-color);
+    border-top: none;
+    animation: rotate 0.35s linear infinite;
+  }
+}
+
+@keyframes skeletonElement {
+	0% {
+		background-color: #7708a7;
+	}
+	50% {
+		background-color: #490268;
+	}
+	100% {
+		background-color: #7708a7;
+	}
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

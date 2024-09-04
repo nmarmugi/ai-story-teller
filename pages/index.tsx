@@ -6,20 +6,51 @@ import WindowBox from "@/components/Organisms/WindowBox/WindowBox";
 import InputLabel from "@/components/Molecules/InputLabel/InputLabel";
 import Button from "@/components/Atoms/Button/Button";
 import SelectOptions from "@/components/Organisms/SelectOptions/SelectOptions";
-import { arrayInputLabel, objSelect } from "@/data/data";
+import { arrayInputLabel, objSelectGenre, objSelectLanguage } from "@/data/data";
+import { GenerateContentCandidate, GoogleGenerativeAI } from "@google/generative-ai";
+import Loader from "@/components/Molecules/Loader/Loader";
+import Switch from "@/components/Molecules/Switch/Switch";
 
 export default function Home() {
   const [formData, setFormData] = useState({
     protagonist: '',
     antagonist: '',
-    genre: ''
+    genre: '',
+    language: ''
   })
   const [error, setError] = useState(false)
   const [load, setLoad] = useState(true)
+  const [story, setStory] = useState('')
+  const [loaderGen, setLoaderGen] = useState(false)
+  const [switchOn, setSwitchOn] = useState(false)
+
+  useEffect(() => {
+    console.log(formData)
+  }, [formData])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prevState => ({ ...prevState, [name]: value }));
+  }
+
+  async function setAI(prompt: string) {
+    setStory('')
+    setLoaderGen(true)
+    if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
+      const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY)
+      const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'})
+      const result = await model.generateContent(prompt)
+      const output = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text
+      if (output) {
+        setStory(output)
+      }
+    }
+    setLoaderGen(false)
+  }
+
+  function handleGenerate() {
+    const prompt = `Generate a ${formData.genre} story for ${switchOn ? 'adults' : 'children'}, with ${formData.protagonist} as the protagonist and ${formData.antagonist} as the antagonist, in ${formData.language}.`
+    setAI(prompt)
   }
 
   useEffect(() => {
@@ -48,9 +79,21 @@ export default function Home() {
         <Header title="ai Story Teller" />
         <WindowBox loader={load} display={error} title="Story Params">
           {arrayInputLabel.map(element => (<InputLabel key={element.input.id} input={element.input} label={element.label} onChange={handleChange}/>))}
-          <SelectOptions label={objSelect.label} options={objSelect.options} onChange={handleChange} />
-          <Button disabled={!(formData.protagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.protagonist)) || !(formData.antagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.antagonist)) || formData.genre === ''} title="Generate" />
+          <SelectOptions name="genre" id="genre" label={objSelectGenre.label} options={objSelectGenre.options} onChange={handleChange} />
+          <SelectOptions name="language" id="language" label={objSelectLanguage.label} options={objSelectLanguage.options} onChange={handleChange} />
+          <Switch switch={switchOn} setSwitch={setSwitchOn}/>
+          <Button onClick={handleGenerate} disabled={!(formData.protagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.protagonist)) || !(formData.antagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.antagonist)) || formData.genre === '' || formData.language === '' || loaderGen} title="Generate" />
         </WindowBox>
+        {story !== '' ? 
+          <div className={styles.story}>{story}</div> : 
+          <div className={styles.loadStory}>
+            <Loader loader={loaderGen}>
+              <div className={styles.textLoad}>
+                <div className={styles.loading}></div>
+              </div>
+            </Loader>
+          </div>
+        }
       </main>
     </>
   )

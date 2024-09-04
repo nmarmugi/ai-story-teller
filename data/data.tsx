@@ -25,7 +25,7 @@ const arrayInputLabel = [
 	}
 ]
 
-const objSelect = {
+const objSelectGenre = {
 	label: 'Genre',
 	options: [
 		{ label: 'Fantasy', value: 'fantasy' },
@@ -59,4 +59,15 @@ const objSelect = {
 	]
 }
 
-export {arrayInputLabel, objSelect}
+const objSelectLanguage = {
+	label: 'Language',
+	options: [
+		{ label: 'English', value: 'english' },
+		{ label: 'French', value: 'french' },
+		{ label: 'Spanish', value: 'spanish' },
+		{ label: 'German', value: 'german' },
+		{ label: 'Italian', value: 'italian' }
+	]
+}
+
+export {arrayInputLabel, objSelectGenre, objSelectLanguage}

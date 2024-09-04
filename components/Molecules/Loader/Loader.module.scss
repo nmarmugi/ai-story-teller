@@ -10,33 +10,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
-
-		.loaderTitle {
-			margin-bottom: 40px;
-			min-height: 31px;
-			width: 150px;
-			animation: skeletonElement 2s linear infinite;
-			border-radius: 8px;
-		}
-
-		.containerLoaderInput {
-			display: flex;
-			gap: 20px;
-		}
-
-		.loaderInput {
-			min-height: 40px;
-			width: 200px;
-			animation: skeletonElement 2s linear infinite;
-			border-radius: 8px;
-		}
-
-		.loaderButton {
-			min-height: 40px;
-			width: 76px;
-			animation: skeletonElement 2s linear infinite;
-			border-radius: 8px;
-		}
 }
 
 .noLoader {
@@ -55,26 +28,8 @@
 	}
 }
 
-@keyframes skeletonElement {
-	0% {
-		background-color: #7708a7;
-	}
-	50% {
-		background-color: #490268;
-	}
-	100% {
-		background-color: #7708a7;
-	}
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1128px) {
 	.loaderBox {
-		height: 328px;
-	}
-
-	.containerLoaderInput {
-		width: 200px;
-		flex-direction: column;
-		align-items: center;
+		height: 428px;
 	}
 }

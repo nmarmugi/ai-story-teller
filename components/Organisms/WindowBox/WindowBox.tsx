@@ -15,11 +15,21 @@ export default function WindowBox(props: IWindowBox) {
 
 	return (
 		<main className={styles.main}>
-			<Loader loader={loader}/>
+			<Loader loader={loader}>
+				<span className={styles.loaderTitle}></span>
+				<div className={styles.containerLoaderInput}>
+					<span className={styles.loaderInput}></span>
+					<span className={styles.loaderInput}></span>
+					<span className={styles.loaderInput}></span>
+					<span className={styles.loaderInput}></span>
+					<span className={styles.loaderSwitch}></span>
+					<span className={styles.loaderButton}></span>
+				</div> 
+			</Loader>
 			<div className={styles.windowBox}>
 				{title && <h2 className={styles.windowBoxTitle}>{title}</h2>}
-				{display === false && <span className={styles.noError}>Error: Enter only alphabetic characters!</span>}
-				{display === true && <span className={styles.error}>Error: Enter only alphabetic characters!</span>}
+				{display === false && <span className={styles.noError}>Error! Enter only alphabetic characters!</span>}
+				{display === true && <span className={styles.error}>Error! Enter only alphabetic characters!</span>}
 				<div className={styles.windowBoxParams}>{children}</div>
 			</div>
 		</main>
