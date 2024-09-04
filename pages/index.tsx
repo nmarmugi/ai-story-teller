@@ -7,7 +7,6 @@ import InputLabel from "@/components/Molecules/InputLabel/InputLabel";
 import Button from "@/components/Atoms/Button/Button";
 import SelectOptions from "@/components/Organisms/SelectOptions/SelectOptions";
 import { arrayInputLabel, objSelectGenre, objSelectLanguage } from "@/data/data";
-import { GenerateContentCandidate, GoogleGenerativeAI } from "@google/generative-ai";
 import Loader from "@/components/Molecules/Loader/Loader";
 import Switch from "@/components/Molecules/Switch/Switch";
 
@@ -34,18 +33,19 @@ export default function Home() {
   }
 
   async function setAI(prompt: string) {
-    setStory('')
-    setLoaderGen(true)
-    if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
-      const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY)
-      const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'})
-      const result = await model.generateContent(prompt)
-      const output = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text
-      if (output) {
-        setStory(output)
-      }
+    setStory('');
+    setLoaderGen(true);
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt})
+    })
+    const data = await response.json()
+    const output = data.output
+    if (output) {
+      setStory(output)
     }
-    setLoaderGen(false)
+    setLoaderGen(false);
   }
 
   function handleGenerate() {
