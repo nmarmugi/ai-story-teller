@@ -35,7 +35,7 @@ export default function Home() {
   async function setAI(prompt: string) {
     setStory('');
     setLoaderGen(true);
-    const response = await fetch('https://ai-story-teller-eta.vercel.app/api/generate', {
+    const response = await fetch(`${process.env.NEXT_BE_URL}/api/generate`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({prompt})
