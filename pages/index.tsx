@@ -35,7 +35,7 @@ export default function Home() {
   async function setAI(prompt: string) {
     setStory('');
     setLoaderGen(true);
-    const response = await fetch(`${process.env.NEXT_BE_URL}/api/generate`, {
+    const response = await fetch(`${process.env.NEXT_BE_URL ?? 'http://localhost:3000'}/api/generate`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({prompt})
