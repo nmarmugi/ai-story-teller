@@ -24,10 +24,14 @@ export default function Home() {
   const [switchOn, setSwitchOn] = useState(false)
   const [reading, setReading] = useState(true)
   const [pause, setPause] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
-    console.log(typeof story)
-  }, [story])
+    const timeCloseError = setTimeout(() => {
+      setErrorMessage('')
+    }, 4000)
+    return () => clearTimeout(timeCloseError)
+  }, [errorMessage])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -37,17 +41,28 @@ export default function Home() {
   async function setAI(prompt: string) {
     setStory('');
     setLoaderGen(true);
-    const response = await fetch(`api/generate`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt})
-    })
-    const data = await response.json()
-    const output = data.output
-    if (output) {
-      setStory(output)
+    setErrorMessage(''); 
+    try {
+      const response = await fetch(`api/generate`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({prompt})
+      })
+      const data = await response.json()
+      const output = data.output
+      if (output) {
+        setStory(output)
+      }
+      if (response.status === 500) {
+        throw new Error(data.message)
+      }
+    } catch(e: unknown) {
+      if (e instanceof Error) {
+        setErrorMessage(e.message);
+      }
+    } finally {
+      setLoaderGen(false);
     }
-    setLoaderGen(false);
   }
 
   function handleGenerate() {
@@ -110,6 +125,10 @@ export default function Home() {
     setReading(true)
   }
 
+  function handleCloseError() {
+    setErrorMessage('')
+  }
+
   return (
     <>
       <Head>
@@ -119,6 +138,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        {errorMessage !== '' && <div className={styles.error}><div onClick={handleCloseError} className={styles.close}>x</div>{errorMessage}<div className={styles.bar}></div></div>}
         <Header title="ai Story Teller" />
         <WindowBox loader={load} display={error} title="Story Params">
           {arrayInputLabel.map(element => (<InputLabel key={element.input.id} input={element.input} label={element.label} onChange={handleChange}/>))}
