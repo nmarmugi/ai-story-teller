@@ -25,6 +25,7 @@ export default function Home() {
   const [reading, setReading] = useState(true)
   const [pause, setPause] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [textGen, setTextGen] = useState(false)
 
   useEffect(() => {
     const timeCloseError = setTimeout(() => {
@@ -32,6 +33,13 @@ export default function Home() {
     }, 4000)
     return () => clearTimeout(timeCloseError)
   }, [errorMessage])
+
+  useEffect(() => {
+    const timeCloseError = setTimeout(() => {
+      setTextGen(false)
+    }, 4000)
+    return () => clearTimeout(timeCloseError)
+  }, [textGen])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -69,6 +77,12 @@ export default function Home() {
     const prompt = `Generate a ${formData.genre} story for ${switchOn ? 'adults' : 'children'}, with ${formData.protagonist} as the protagonist and ${formData.antagonist} as the antagonist, in ${formData.language}. Do not generate a title.`
     setAI(prompt)
   }
+
+  useEffect(() => {
+    if (errorMessage === '' && story !== '') {
+      setTextGen(true)
+    }
+  }, [story])
 
   useEffect(() => {
     setTimeout(() => {
@@ -129,6 +143,10 @@ export default function Home() {
     setErrorMessage('')
   }
 
+  function handleCloseTextGen() {
+    setTextGen(false)
+  }
+
   return (
     <>
       <Head>
@@ -139,6 +157,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         {errorMessage !== '' && <div className={styles.error}><div onClick={handleCloseError} className={styles.close}>x</div>{errorMessage}<div className={styles.bar}></div></div>}
+        {textGen && <div className={styles.textGen}><div onClick={handleCloseTextGen} className={styles.close}>x</div>Successfully generated story!<div className={styles.bar}></div></div>}
         <Header title="ai Story Teller" />
         <WindowBox loader={load} display={error} title="Story Params">
           {arrayInputLabel.map(element => (<InputLabel key={element.input.id} input={element.input} label={element.label} onChange={handleChange}/>))}

@@ -9,10 +9,41 @@
   padding: 30px;
 }
 
+.textGen {
+  position: fixed;
+  top: 0;
+  background-color: rgb(0, 116, 29);
+  padding: 10px;
+  border-radius: 0px 0px 8px 8px;
+  color: var(--clear-color);
+  font-weight: bolder;
+  animation: error 0.35s linear forwards;
+  overflow: hidden;
+  padding-top: 15px;
+  z-index: 10;
+
+  .bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--clear-color);
+    animation: bar 4s linear forwards;
+  }
+
+  .close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+  }
+}
+
 .error {
   position: fixed;
   top: 0;
-  background-color: red;
+  background-color: rgb(172, 0, 0);
   padding: 10px;
   border-radius: 0px 0px 8px 8px;
   color: var(--clear-color);
