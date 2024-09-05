@@ -22,10 +22,12 @@ export default function Home() {
   const [story, setStory] = useState('')
   const [loaderGen, setLoaderGen] = useState(false)
   const [switchOn, setSwitchOn] = useState(false)
+  const [reading, setReading] = useState(true)
+  const [pause, setPause] = useState(true)
 
   useEffect(() => {
-    console.log(formData)
-  }, [formData])
+    console.log(typeof story)
+  }, [story])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -49,7 +51,7 @@ export default function Home() {
   }
 
   function handleGenerate() {
-    const prompt = `Generate a ${formData.genre} story for ${switchOn ? 'adults' : 'children'}, with ${formData.protagonist} as the protagonist and ${formData.antagonist} as the antagonist, in ${formData.language}.`
+    const prompt = `Generate a ${formData.genre} story for ${switchOn ? 'adults' : 'children'}, with ${formData.protagonist} as the protagonist and ${formData.antagonist} as the antagonist, in ${formData.language}. Do not generate a title.`
     setAI(prompt)
   }
 
@@ -66,6 +68,47 @@ export default function Home() {
       setError(false)
     }
   }, [formData])
+
+  function handleVoice() {
+    const splitString = story.split('.')
+    for(let i = 0; i < splitString.length; i++) {
+      const utterance = new SpeechSynthesisUtterance(splitString[i])
+      if (formData.language === 'italian') {
+        utterance.lang = 'it-IT';
+      } else if (formData.language === 'english') {
+        utterance.lang = 'en-EN';
+      } else if (formData.language === 'french') {
+        utterance.lang = 'fr-FR';
+      } else if (formData.language === 'spanish') {
+        utterance.lang = 'es-ES';
+      } else if (formData.language === 'german') {
+        utterance.lang = 'de-DE';
+      }
+      if (i === splitString.length - 1) {
+        utterance.onend = function() {
+          setReading(true);
+        }
+      }
+      speechSynthesis.speak(utterance)
+    }
+    setReading(false)
+  }
+
+  function handlePauseVoice() {
+    speechSynthesis.pause()
+    setPause(false)
+  }
+
+  function handleResumeVoice() {
+    speechSynthesis.resume()
+    setPause(true)
+  }
+
+  function handleStopVoice() {
+    speechSynthesis.cancel()
+    setPause(true)
+    setReading(true)
+  }
 
   return (
     <>
@@ -85,7 +128,15 @@ export default function Home() {
           <Button onClick={handleGenerate} disabled={!(formData.protagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.protagonist)) || !(formData.antagonist.trim().length > 0 && /^[a-zA-Z\s]+$/.test(formData.antagonist)) || formData.genre === '' || formData.language === '' || loaderGen} title="Generate" />
         </WindowBox>
         {story !== '' ? 
-          <div className={styles.story}>{story}</div> : 
+          <div className={styles.story}>
+            <div className={styles.containerButtons}>
+              <Button disabled={!reading} onClick={handleVoice}><img src="/img/volume_3917598.png" alt="Icon voice" /></Button>
+              {pause && <Button disabled={reading} onClick={handlePauseVoice}><img src="/img/pause_3917619.png" alt="Icon voice" /></Button>}
+              {!pause && <Button disabled={reading} onClick={handleResumeVoice}><img src="/img/play_16861411.png" alt="Icon voice" /></Button>}
+              <Button disabled={reading} onClick={handleStopVoice}><img src="/img/cross_3917759.png" alt="Icon voice" /></Button>
+            </div>
+            {story}
+          </div> : 
           <div className={styles.loadStory}>
             <Loader loader={loaderGen}>
               <div className={styles.textLoad}>
