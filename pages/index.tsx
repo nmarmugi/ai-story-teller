@@ -76,6 +76,7 @@ export default function Home() {
   function handleGenerate() {
     const prompt = `Generate a ${formData.genre} story for ${switchOn ? 'adults' : 'children'}, with ${formData.protagonist} as the protagonist and ${formData.antagonist} as the antagonist, in ${formData.language}. Do not generate a title.`
     setAI(prompt)
+    handleStopVoice()
   }
 
   useEffect(() => {
