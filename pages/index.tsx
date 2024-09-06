@@ -26,6 +26,8 @@ export default function Home() {
   const [pause, setPause] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [textGen, setTextGen] = useState(false)
+  const [questionsString, setQuestionsString] = useState<string[]>([])
+  const [answersString, setAnswersString] = useState<string[]>([])
 
   useEffect(() => {
     const timeCloseError = setTimeout(() => {
@@ -48,6 +50,8 @@ export default function Home() {
 
   async function setAI(prompt: string) {
     setStory('');
+    setQuestionsString([])
+    setAnswersString([])
     setLoaderGen(true);
     setErrorMessage(''); 
     try {
@@ -71,6 +75,56 @@ export default function Home() {
     } finally {
       setLoaderGen(false);
     }
+  }
+
+  async function answers(prompt: string) {
+    const response = await fetch(`api/generate`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt})
+    })
+    const data = await response.json()
+    const output = data.output
+    if (output) {
+      const parsedQuestionsAnswers = parseQuestionsAndAnswers(output);
+      setAnswersString(parsedQuestionsAnswers);
+    }
+  }
+
+  async function questions(prompt: string) {
+    setQuestionsString([])
+    setAnswersString([])
+    const response = await fetch(`api/generate`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt})
+    })
+    const data = await response.json()
+    const output = data.output
+    if (output) {
+      const parsedQuestionsAnswers = parseQuestionsAndAnswers(output);
+      setQuestionsString(parsedQuestionsAnswers);
+    }
+  }
+
+  useEffect(() => {
+    console.log(questionsString)
+  }, [questionsString])
+
+  function parseQuestionsAndAnswers(input: string): string[] {
+    const cleanedInput = input.replace(/[#*\n]/g, '');
+    const sections = cleanedInput.split(/\d+\.\s+/).filter(Boolean);
+    return sections;
+  }
+
+  function handleGenerateQuestions() {
+    const prompt = story + `Questa è la storia, genera una comprensione del testo facendo una lista di cinque domande. ${formData.language} in questa lingua.`
+    questions(prompt)
+  }
+
+  function handleGenerateAnswers() {
+    const prompt = story + questionsString + `Rispondi alle domande. ${formData.language} in questa lingua.`
+    answers(prompt)
   }
 
   function handleGenerate() {
@@ -176,6 +230,31 @@ export default function Home() {
               <Button disabled={reading} onClick={handleStopVoice}><img src="/img/cross_3917759.png" alt="Icon voice" /></Button>
             </div>
             {story}
+            <div className={styles.containerQuestionsAnswers}>
+              <Button onClick={handleGenerateQuestions} title="Generates questions" />
+            </div>
+            <div>
+              {Array.isArray(questionsString) && questionsString.length > 0 && (
+              <>
+                <h2>{questionsString[0]}</h2>
+                <ul>
+                  {questionsString.slice(1).map((element, index) => (<li key={index}>{element}</li>))}
+                </ul>
+              </>)}
+            </div>
+            {questionsString.length > 0 && 
+            <div className={styles.containerQuestionsAnswers}>
+              <Button onClick={handleGenerateAnswers} title="Generates answers" />
+            </div>}
+            <div>
+              {Array.isArray(answersString) && answersString.length > 0 && (
+              <>
+                <h2>{answersString[0]}</h2>
+                <ul>
+                  {answersString.slice(1).map((element, index) => (<li key={index}>{element}</li>))}
+                </ul>
+              </>)}
+            </div>
           </div> : 
           <div className={styles.loadStory}>
             <Loader loader={loaderGen}>
